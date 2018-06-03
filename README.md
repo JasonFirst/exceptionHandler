@@ -1,5 +1,5 @@
 # exceptionHandler 
-# 统一异常处理
+# 使用AOP统一异常处理
 
 ### 日常业务中存在的问题
 * 使用大量的try/catch来捕获异常
@@ -52,6 +52,11 @@ public class ExampleService implements IExampleService{
 
 }
 ```
+-- 这样做以后，代码里少了很多try和catch，这些到处复制的代码本来就应该统一起来，只是在aop以前没有什么更好的处理方式，只能复制。
+-- 其次，service抛出异常后，不用再去controller里加一段catch，这种操作每次都要浪费5-15秒（如果你不熟悉IDE中的快捷键，这就是噩梦）
+-- 现在你的异常只要往上抛出去就不管了，专心写业务代码 throws Exception
+
+## 如何完成？其实原理相当简单。
 
 ### 把那些烦人的try丢到AOP中处理
 * 我们将采用Spring AOP统一处理异常，统一返回后端接口的结果。
