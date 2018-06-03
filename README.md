@@ -1,10 +1,9 @@
 # exceptionHandler 
-# 切面异常处理
+# 统一异常处理
 
-### 存在问题
-* 日常业务中存在如下业务代码
-* 他们使用大量的try/catch来捕获异常
-* 导致整个控制层代码可读性极差，并且此类工作重复枯燥、容易被遗忘。
+### 日常业务中存在的问题
+* 使用大量的try/catch来捕获异常
+* 导致整个控制层代码可读性极差，并且此类工作重复枯燥、容易复制错。
 * 一份糟糕的控制器代码如下：
 ```
 @RequestMapping("test/run/old")
@@ -23,16 +22,48 @@ public JsonResponse testRunOld() {
 }
 ```
 
-### 解决方案
-* 我们将采用AOP统一处理异常
+### 我们要把代码变成这样：
+```
+@Controller
+public class TestController {
+	
+	@Autowired
+	private IExampleService exampleService;
+	
+	@RequestMapping("test/run/aop")
+	public JsonResponse testRunAop() throws Exception {
+		exampleService.runTest();
+		System.out.println("正常运行");
+		return JsonResponse.newOk();
+	}
+}
+```
+```
+@Service
+public class ExampleService implements IExampleService{
+
+	@Override
+	public void runTest() throws Exception {
+
+		// do something
+		System.out.println("run something");
+		throw new CustomException(ErrorMsgEnum.DATA_NO_COMPLETE);
+	}
+
+}
+```
+
+### 把那些烦人的try丢到AOP中处理
+* 我们将采用Spring AOP统一处理异常，统一返回后端接口的结果。
 * 使用一个自定义异常和一个错误前端提示枚举来逐层传递消息
-* 一个错误枚举来代替新建异常类，减少文件数量
+* 一个错误枚举来代替新建异常信息类，减少业务异常信息文件的数量
 
 #### 几个核心类代码
 * ErrorMsgEnum 错误枚举
 ```
 public enum ErrorMsgEnum {
 	
+	//正常返回的枚举
 	SUCCESS(true, 2000,"正常返回", "操作成功"), 
 	
 	// 系统错误，50开头
@@ -133,36 +164,8 @@ public JsonResponse serviceAOP(ProceedingJoinPoint pjp) throws Exception {
 ```
 ### Test && End
 至此，我们已经可以直接在Service中随意抛出一个异常，
-将每个控制器层抛出的异常定义为throws Exception，我们的代码将会变成这样：
-```
-@Controller
-public class TestController {
-	
-	@Autowired
-	private IExampleService exampleService;
-	
-	@RequestMapping("test/run/aop")
-	public JsonResponse testRunAop() throws Exception {
-		exampleService.runTest();
-		System.out.println("正常运行");
-		return JsonResponse.newOk();
-	}
-}
-```
-```
-@Service
-public class ExampleService implements IExampleService{
+将每个控制器层抛出的异常定义为throws Exception
 
-	@Override
-	public void runTest() throws Exception {
-
-		// do something
-		System.out.println("run something");
-		throw new CustomException(ErrorMsgEnum.DATA_NO_COMPLETE);
-	}
-
-}
-```
 #### 经过这次处理：
 * 再也不用去担心控制器层会不会捕获，
 * 也不用为每一个异常特地去定义一个Exception。
