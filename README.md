@@ -5,6 +5,7 @@
 * 日常业务中存在如下业务代码
 * 他们使用大量的try/catch来捕获异常
 * 导致整个控制层代码可读性极差，并且此类工作重复枯燥、容易被遗忘。
+* 一份糟糕的控制器代码如下：
 ```
 @RequestMapping("test/run/old")
 public JsonResponse testRunOld() {
