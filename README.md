@@ -52,9 +52,9 @@ public class ExampleService implements IExampleService{
 
 }
 ```
--- 这样做以后，代码里少了很多try和catch，这些到处复制的代码本来就应该统一起来，只是在aop以前没有什么更好的处理方式，只能复制。
--- 其次，service抛出异常后，不用再去controller里加一段catch，这种操作每次都要浪费5-15秒（如果你不熟悉IDE中的快捷键，这就是噩梦）
--- 现在你的异常只要往上抛出去就不管了，专心写业务代码 throws Exception
+* 这样做以后，代码里少了很多try和catch，这些到处复制的代码本来就应该统一起来，只是在aop以前没有什么更好的处理方式，只能复制。
+* 其次，service抛出异常后，不用再去controller里加一段catch，这种操作每次都要浪费5-15秒（如果你不熟悉IDE中的快捷键，这就是噩梦）
+* 现在你的异常只要往上抛出去就不管了(throws Exception)，可以专心写业务代码
 
 ## 如何完成？其实原理相当简单。
 
@@ -72,7 +72,7 @@ public enum ErrorMsgEnum {
 	SUCCESS(true, 2000,"正常返回", "操作成功"), 
 	
 	// 系统错误，50开头
-	SYS_ERROR(false, 5000, "系统错误", "系统错误"),
+	SYS_ERROR(false, 5000, "系统错误", "亲，系统出错了哦~"),
 	PARAM_INVILAD(false, 5001, "参数出现异常", "参数出现异常"), 
 	DATA_NO_COMPLETE(false, 5002, "数据填写不完整，请检查", "数据填写不完整，请检查");
 
@@ -168,11 +168,8 @@ public JsonResponse serviceAOP(ProceedingJoinPoint pjp) throws Exception {
 }
 ```
 ### Test && End
-至此，我们已经可以直接在Service中随意抛出一个异常，
-将每个控制器层抛出的异常定义为throws Exception
+至此，我们已经可以直接在 Service 或 Controller 中随意抛出一个异常，
+直接每个控制器方法抛出的异常定义为 throws Exception 即可
 
 #### 经过这次处理：
-* 再也不用去担心控制器层会不会捕获，
-* 也不用为每一个异常特地去定义一个Exception。
-* 最大的好处是：没有try/catch
-* 一处代码，各种好处。
+* 最大的好处是：没有try
