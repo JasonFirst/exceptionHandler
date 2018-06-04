@@ -13,7 +13,7 @@ public JsonResponse testRunOld() {
 		System.out.println("正常运行");
 		return JsonResponse.newOk();
 	}catch (DataNotCompleteException e) {
-		logger.error("something error occured!");
+		logger.error("数据不完整错误");
 		return JsonResponse.newError(ErrorMsgEnum.DATA_NO_COMPLETE);
 	} catch (Exception e) {
 		return JsonResponse.newError();
@@ -71,10 +71,14 @@ public enum ErrorMsgEnum {
 	//正常返回的枚举
 	SUCCESS(true, 2000,"正常返回", "操作成功"), 
 	
+	// 权限问题，30开头
+	AUTH_FAILD(false,3000,"登录失败","亲，没这个账号哦"),
+	
 	// 系统错误，50开头
 	SYS_ERROR(false, 5000, "系统错误", "亲，系统出错了哦~"),
 	PARAM_INVILAD(false, 5001, "参数出现异常", "参数出现异常"), 
 	DATA_NO_COMPLETE(false, 5002, "数据填写不完整，请检查", "数据填写不完整，请检查");
+	
 
 	private ErrorMsgEnum(boolean ok, int code, String msg ,String userMsg) {
 		this.ok = ok;
