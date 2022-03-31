@@ -4,7 +4,7 @@
   <artifactId>exceptionHandler</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <properties>
-	<org.springframework-version>4.2.6.RELEASE</org.springframework-version>
+	<org.springframework-version>5.3.18</org.springframework-version>
 	<org.aspectj-version>1.8.10</org.aspectj-version>
 </properties>
 <dependencies>
